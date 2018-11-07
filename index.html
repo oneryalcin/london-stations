@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="main.css">
+    <title>Udacity Neighboorhood Map for London</title>
+</head>
+<body>
+    <div class="container">
+        <div class="options-box">
+            <h1>Filter London Train Stations</h1>
+            <form data-bind="submit: filterStations">
+                <input data-bind="value: filterQuery" placeholder="Type your station here" />
+                <button type="submit">Filter</button>
+            </form>
+            <ul data-bind="foreach: visibleStations, visible: visibleStations().length > 0">
+                <li data-bind="text: title, click: $parent.filterOneStation">
+                </li>
+            </ul>
+        </div>
+        <div id="map"></div>
+    </div>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA1y7wE46IcoO3p16A_Z3xaqZhE4NrSS_w&v=3&callback=initMap"></script>
+    <script src="https://knockoutjs.com/downloads/knockout-3.4.2.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>
+
+
+
+
