@@ -3,18 +3,17 @@
 function TrainStation(data) {
     const self = this;
 
-    self.name = ko.observable(data.name);
-    self.zone = ko.observable(data.zone);
+    // self.name = ko.observable(data.name);
+    self.name = data.name;
+    self.zone = data.zone;
     self.position = { lat: data.latitude, lng: data.longitude }
-    self.lat = ko.observable(data.latitude);
-    self.lng = ko.observable(data.longitude);
-    self.title = ko.observable(data.name + " - Zone: " + data.zone)
+    self.title = data.name + " - Zone: " + data.zone
 
     // Define the Google Maps Markers for each station
     self.marker = new google.maps.Marker({
         map: map,
         position: self.position,
-        title: self.title(),
+        title: self.title,
         animation: google.maps.Animation.DROP,
     });
 
@@ -68,7 +67,7 @@ function TrainStationViewModel() {
     self.filterStations = function () {
 
         // Filter stations based on the filter
-        self.visibleStations(self.stations().filter(station => station.name().toLowerCase().includes(self.filterQuery().toLowerCase())))
+        self.visibleStations(self.stations().filter(station => station.name.toLowerCase().includes(self.filterQuery().toLowerCase())))
 
         // Remove all markers first or all stations and then only make
         // visible the ones filtered
@@ -96,7 +95,7 @@ function TrainStationViewModel() {
 
     // Run when user clicks a station name
     self.filterOneStation = function (station) {
-        self.filterQuery(station.name());
+        self.filterQuery(station.name);
         self.filterStations();
     }
 
