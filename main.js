@@ -1,7 +1,7 @@
 
 // London Train station Class, I mean function :)
 function TrainStation(data) {
-    var self = this;
+    const self = this;
 
     self.name = ko.observable(data.name);
     self.zone = ko.observable(data.zone);
@@ -25,7 +25,6 @@ function TrainStation(data) {
 
 }
 
-
 // Very similar function is defined in Udacity's Google Maps class.
 // I pretty much adapted to my requirements
 populateInfoWindow = function (marker, infowindow) {
@@ -43,7 +42,7 @@ populateInfoWindow = function (marker, infowindow) {
 
 // Our Octopus, I mean ViewModel, the glue between View and Data
 function TrainStationViewModel() {
-    var self = this;
+    const self = this;
     self.stations = ko.observableArray([]);     // all available stations
     self.visibleStations = ko.observableArray([]);      // filtered stations
     self.filterQuery = ko.observable();     // this filter gets the input from user form
@@ -52,11 +51,16 @@ function TrainStationViewModel() {
 
     // London stations data is located at Marquis de Geek api page for London Tube.
     // I used jQuery ajax moduel of getJSON to access the London Stations Data
-    $.getJSON("http://marquisdegeek.com/api/tube/", function (allData) {
-        var mappedStations = $.map(allData, function (item) { return new TrainStation(item) });
-        self.stations(mappedStations);
-        self.visibleStations(self.stations());  // when page first loads set all stations are visible
-    });
+    $.getJSON("http://marquisdegeek.com/api/tube/")
+        .done(function (allData) {
+            const mappedStations = $.map(allData, function (item) { return new TrainStation(item) });
+            self.stations(mappedStations);
+            self.visibleStations(self.stations());  // when page first loads set all stations are visible
+        })
+        .fail(function (jqxhr, textStatus, error) {
+            const err = "Error happened while retrieving data: " + textStatus + ", " + error;
+            alert(err)
+        });
 
     // OPERATIONS
 
@@ -78,8 +82,16 @@ function TrainStationViewModel() {
             element.marker.setVisible(true)
             bounds.extend(element.marker.position)
         });
-        // Ensure all stations are still visible after filtering
-        map.fitBounds(bounds)
+
+        if (self.visibleStations().length > 0) {
+            // Ensure all stations are still visible after filtering
+            map.fitBounds(bounds)
+        } else {
+            // filter returns no data points, set the map center to London city center
+            map.setCenter({ lat: 51.521340, lng: -0.125527 });
+            map.setZoom(11);
+        }
+
     };
 
     // Run when user clicks a station name
@@ -106,5 +118,3 @@ function initMap() {
     // Do the bindings for Knockout
     ko.applyBindings(new TrainStationViewModel());
 }
-
-
