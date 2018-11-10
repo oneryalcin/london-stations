@@ -1,13 +1,14 @@
-//Bicycle Station Model
+/*jshint esversion: 6 */
+'use strict';
+
+// Bicycle Station Model
 function BorisBikeStation(data) {
     let self = this
     this.name = data.commonName;
-    // this.lat = data.lat;
-    // this.lng = data.lon;
     this.position = { lat: data.lat, lng: data.lon }
 
-    getAdditionalBikeStationData = function (self, data) {
-        for (elem of data.additionalProperties) {
+    const getAdditionalBikeStationData = function (self, data) {
+        for (const elem of data.additionalProperties) {
             if (elem.key == 'NbBikes') {
                 self.avaliableBikesCount = parseInt(elem.value);
             } else if (elem.key == 'NbEmptyDocks') {
@@ -17,7 +18,6 @@ function BorisBikeStation(data) {
             }
         }
     }(self, data)
-    // this.getAdditionalBikeStationData(data);
 }
 
 
@@ -28,8 +28,6 @@ function TrainStation(data) {
     // self.name = ko.observable(data.name);
     self.name = data.name;
     self.zone = data.zone;
-    // self.lat = data.longitude;
-    // self.lng = data.latitude;
     self.position = { lat: data.latitude, lng: data.longitude }
     self.title = data.name + " - Zone: " + data.zone
 
@@ -43,8 +41,21 @@ function TrainStation(data) {
 
     // when clicked show user Station Name and Zone information
     self.marker.addListener('click', function () {
+        let infowindow = new google.maps.InfoWindow();
         populateInfoWindow(this, infowindow);
-    } );
+    });
+
+    // when a user clicks a station in the list it should change color of marker
+    self.highlightStation = function (station) {
+        if (station.marker.getAnimation() !== null) {
+            station.marker.setAnimation(null);
+        } else {
+            station.marker.setAnimation(google.maps.Animation.BOUNCE);
+            setTimeout(function () { station.marker.setAnimation(null); }, 3000);
+            let infowindow = new google.maps.InfoWindow();
+            populateInfoWindow(station.marker, infowindow);
+        }
+    }
 
 }
 
@@ -57,12 +68,23 @@ const getNearbyBikeStations = function (marker) {
 
 }
 
-populateInfoWindowContent = function (marker, nearbyBikeStations) {
+const populateInfoWindowContent = function (marker, nearbyBikeStations) {
     let bikeInfo = ""
     let stationInfo = `<div> <h4 class="mb-2"> ${marker.title}</h4> </div >`
     if (nearbyBikeStations.length > 0) {
         for(const bikeStation of nearbyBikeStations) {
-            let progress = (bikeStation.avaliableBikesCount / bikeStation.dockCount)* 100
+            // progress bar percentage
+            const progress = (bikeStation.avaliableBikesCount / bikeStation.dockCount)* 100;
+
+            //progress bar color, up to 20% red, 20% - 50% yellow and above green.
+            let progressColor = 'bg-success';
+            if (progress < 25) {
+                progressColor = 'bg-danger';
+            } else if (progress < 50) {
+                progressColor = 'bg-warning';
+            };
+
+            // for each nearby bikestation create a new progress bar along with bike availability information
             bikeInfo = bikeInfo + `<div class="row">
             <p class="col-6 mb-1 text-truncate">${bikeStation.name}</p>
             <div class="col-6 d-flex flex-row bd-highlight mb-1 justify-content-end">
@@ -75,18 +97,31 @@ populateInfoWindowContent = function (marker, nearbyBikeStations) {
             </div>
         </div>
         <div class="progress">
-            <div class="progress-bar" role="progressbar" style="width: ${progress}%" aria-valuenow="${progress}" aria-valuemin="0"
+            <div class="progress-bar ${progressColor}" role="progressbar" style="width: ${progress}%" aria-valuenow="${progress}" aria-valuemin="0"
                 aria-valuemax="100"></div>
         </div>`
         }
     } else {
-        bikeInfo = `<p>There is no nearby Boris Bike</p>`
+        bikeInfo = `<p>No Boris Bike station found nearby</p>`
     }
     return stationInfo + bikeInfo
 }
+
+// Get latest TFL Data for BorisBike Docking stations.
+// When user clicks a station marker we'll display nearby bike stations together with availability.
+const queryBorisBikeData = function () {
+
+    $.getJSON("https://api.tfl.gov.uk/bikepoint")
+        .done(function (allBikeData) {
+            const borisBikeStations = $.map(allBikeData, function (bikeData) { return new BorisBikeStation(bikeData) })
+            localStorage.setItem('borisBikeStations', JSON.stringify(borisBikeStations));
+        });
+}
+
+
 // Very similar function is defined in Udacity's Google Maps class.
 // I pretty much adapted to my requirements
-populateInfoWindow = function (marker, infowindow) {
+const populateInfoWindow = function (marker, infowindow) {
     // Check to make sure the infowindow is not already opened on this marker.
     if (infowindow.marker != marker) {
         infowindow.marker = marker;
@@ -166,30 +201,14 @@ function TrainStationViewModel() {
 
 }
 
+// This is a kind of quick way via jQuery, I didn't think thoroughly to convert to knowckout js
+$(document).ready(function () {
+    $('#sidebarCollapse').on('click', function () {
+        $('#sidebar').toggleClass('active');
+        $('#navbar-form').toggleClass('d-none');
+    });
+});
 
-
-// Get latest TFL Data for BorisBike Docking stations.
-// When user clicks a station marker we'll display nearby bike stations together with availability.
-queryBorisBikeData = function () {
-
-    $.getJSON("https://api.tfl.gov.uk/bikepoint")
-        .done(function (allBikeData) {
-            const borisBikeStations = $.map(allBikeData, function (bikeData) { return new BorisBikeStation(bikeData) })
-            localStorage.setItem('borisBikeStations', JSON.stringify(borisBikeStations));
-        });
-}
-
-// queryTrainStationsData = function () {
-//     $.getJSON("http://marquisdegeek.com/api/tube/")
-//         .done(function (allData) {
-//             const mappedStations = $.map(allData, function (item) { return new TrainStation(item) });
-//             localStorage.setItem('mappedStations', JSON.stringify(mappedStations));
-//         })
-//         .fail(function (jqxhr, textStatus, error) {
-//             const err = "Error happened while retrieving data: " + textStatus + ", " + error;
-//             alert(err)
-//         });
-// }
 
 // initMap is required by GoogleMaps, it's a callback function,
 function initMap() {
@@ -204,9 +223,11 @@ function initMap() {
     // Get Bike data
     queryBorisBikeData();
 
-    // Set the infowindow
-    infowindow = new google.maps.InfoWindow();
-
     // Do the bindings for Knockout
     ko.applyBindings(new TrainStationViewModel());
+}
+
+// If Google Maps loading fails this is the callback function
+onerror = function () {
+    alert('Loading Google maps javascript failed')
 }
