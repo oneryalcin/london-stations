@@ -1,17 +1,20 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title>Udacity Neighbourhood Map -  London Train Stations</title>
+    <title>Udacity Neighbourhood Map - Boris Bike Stations</title>
+    <!-- Google fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Encode+Sans+Condensed" rel="stylesheet">
 
     <!-- Bootstrap CSS CDN -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4"
         crossorigin="anonymous">
-    <!-- Our Custom CSS -->
+
+        <!-- Our Custom CSS -->
     <link rel="stylesheet" href="style.css">
 
     <!-- Font Awesome JS -->
@@ -26,7 +29,7 @@
         <!-- Sidebar  -->
         <nav id="sidebar">
             <div class="sidebar-header">
-                <h3>London Train Stations</h3>
+                <h3>London Train/Bike Stations</h3>
             </div>
                 <!-- Filter input for traion stations -->
                 <form data-bind="submit: filterStations">
@@ -39,9 +42,7 @@
                     </div>
                 </form>
             <ul class="list-unstyled components" data-bind="foreach: visibleStations, visible: visibleStations().length > 0">
-                <a href="#">
-                    <li data-bind="text: title, click: highlightStation"></li>
-                </a>
+                <li data-bind="text: title, click: highlightStation"></li>
             </ul>
         </nav>
 
@@ -68,6 +69,9 @@
             </nav>
             <!-- Google Maps  -->
             <div id="map"></div>
+            <div class="text-center mt-3">
+                <p style="font-size:0.9rem">TFL station data is provided by <a href="http://marquisdegeek.com/api/tube/">Marquis de Geek</a> and Bike Station data is provided by <a href="https://api.tfl.gov.uk/bikepoint">TFL</a></p>
+            </div>
         </div>
     </div>
 
@@ -80,18 +84,10 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm"
         crossorigin="anonymous"></script>
 
-    <!-- Quick jquery code to toggle sidebar  -->
-    <!-- <script type="text/javascript">
-        $(document).ready(function () {
-            $('#sidebarCollapse').on('click', function () {
-                $('#sidebar').toggleClass('active');
-                $('#navbar-form').toggleClass('d-none');
-            });
-        });
-    </script> -->
+    <!-- knockoutjs  -->
     <script src="https://knockoutjs.com/downloads/knockout-3.4.2.js"></script>
-    <script src="main.js"></script>
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA1y7wE46IcoO3p16A_Z3xaqZhE4NrSS_w&v=3&callback=initMap"></script>
+    <script src="main.js"></script>
 </body>
 
 </html>

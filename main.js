@@ -1,11 +1,13 @@
 /*jshint esversion: 6 */
 'use strict';
 
+let map;
+
 // Bicycle Station Model
 function BorisBikeStation(data) {
-    let self = this
+    let self = this;
     this.name = data.commonName;
-    this.position = { lat: data.lat, lng: data.lon }
+    this.position = { lat: data.lat, lng: data.lon };
 
     const getAdditionalBikeStationData = function (self, data) {
         for (const elem of data.additionalProperties) {
@@ -14,10 +16,10 @@ function BorisBikeStation(data) {
             } else if (elem.key == 'NbEmptyDocks') {
                 self.emptyDocksCount = parseInt(elem.value);
             } else if (elem.key == 'NbDocks') {
-                self.dockCount = parseInt(elem.value)
+                self.dockCount = parseInt(elem.value);
             }
         }
-    }(self, data)
+    }(self, data);
 }
 
 
@@ -28,8 +30,8 @@ function TrainStation(data) {
     // self.name = ko.observable(data.name);
     self.name = data.name;
     self.zone = data.zone;
-    self.position = { lat: data.latitude, lng: data.longitude }
-    self.title = data.name + " - Zone: " + data.zone
+    self.position = { lat: data.latitude, lng: data.longitude };
+    self.title = data.name + " - Zone: " + data.zone;
 
     // Define the Google Maps Markers for each station
     self.marker = new google.maps.Marker({
@@ -40,10 +42,7 @@ function TrainStation(data) {
     });
 
     // when clicked show user Station Name and Zone information
-    self.marker.addListener('click', function () {
-        let infowindow = new google.maps.InfoWindow();
-        populateInfoWindow(this, infowindow);
-    });
+    self.marker.addListener('click', clickMarker);
 
     // when a user clicks a station in the list it should change color of marker
     self.highlightStation = function (station) {
@@ -55,26 +54,30 @@ function TrainStation(data) {
             let infowindow = new google.maps.InfoWindow();
             populateInfoWindow(station.marker, infowindow);
         }
-    }
-
+    };
 }
+
+const clickMarker = function () {
+    const marker = this;
+    let infowindow = new google.maps.InfoWindow();
+    populateInfoWindow(marker, infowindow);
+};
 
 const getNearbyBikeStations = function (marker) {
-    let bikeStations = JSON.parse(localStorage.getItem('borisBikeStations'))
-    let filteredStations = bikeStations.filter(function(station) {
-        return (Math.abs(marker.position.lat() - station.position.lat) < 0.005) && (Math.abs(marker.position.lng() - station.position.lng) < 0.005)
-    })
-    return filteredStations
-
-}
+    let bikeStations = JSON.parse(localStorage.getItem('borisBikeStations'));
+    let filteredStations = bikeStations.filter(function (station) {
+        return (Math.abs(marker.position.lat() - station.position.lat) < 0.005) && (Math.abs(marker.position.lng() - station.position.lng) < 0.005);
+    });
+    return filteredStations;
+};
 
 const populateInfoWindowContent = function (marker, nearbyBikeStations) {
-    let bikeInfo = ""
-    let stationInfo = `<div> <h4 class="mb-2"> ${marker.title}</h4> </div >`
+    let bikeInfo = "";
+    let stationInfo = `<div> <h4 class="mb-2"> ${marker.title}</h4> </div >`;
     if (nearbyBikeStations.length > 0) {
-        for(const bikeStation of nearbyBikeStations) {
+        for (const bikeStation of nearbyBikeStations) {
             // progress bar percentage
-            const progress = (bikeStation.avaliableBikesCount / bikeStation.dockCount)* 100;
+            const progress = (bikeStation.avaliableBikesCount / bikeStation.dockCount) * 100;
 
             //progress bar color, up to 20% red, 20% - 50% yellow and above green.
             let progressColor = 'bg-success';
@@ -82,7 +85,7 @@ const populateInfoWindowContent = function (marker, nearbyBikeStations) {
                 progressColor = 'bg-danger';
             } else if (progress < 50) {
                 progressColor = 'bg-warning';
-            };
+            }
 
             // for each nearby bikestation create a new progress bar along with bike availability information
             bikeInfo = bikeInfo + `<div class="row">
@@ -99,13 +102,13 @@ const populateInfoWindowContent = function (marker, nearbyBikeStations) {
         <div class="progress">
             <div class="progress-bar ${progressColor}" role="progressbar" style="width: ${progress}%" aria-valuenow="${progress}" aria-valuemin="0"
                 aria-valuemax="100"></div>
-        </div>`
+        </div>`;
         }
     } else {
-        bikeInfo = `<p>No Boris Bike station found nearby</p>`
+        bikeInfo = `<p>No Boris Bike station found nearby</p>`;
     }
-    return stationInfo + bikeInfo
-}
+    return stationInfo + bikeInfo;
+};
 
 // Get latest TFL Data for BorisBike Docking stations.
 // When user clicks a station marker we'll display nearby bike stations together with availability.
@@ -113,10 +116,10 @@ const queryBorisBikeData = function () {
 
     $.getJSON("https://api.tfl.gov.uk/bikepoint")
         .done(function (allBikeData) {
-            const borisBikeStations = $.map(allBikeData, function (bikeData) { return new BorisBikeStation(bikeData) })
+            const borisBikeStations = $.map(allBikeData, function (bikeData) { return new BorisBikeStation(bikeData); });
             localStorage.setItem('borisBikeStations', JSON.stringify(borisBikeStations));
         });
-}
+};
 
 
 // Very similar function is defined in Udacity's Google Maps class.
@@ -136,7 +139,7 @@ const populateInfoWindow = function (marker, infowindow) {
             infowindow.setMarker = null;
         });
     }
-}
+};
 
 
 // Our Octopus, I mean ViewModel, the glue between View and Data
@@ -153,13 +156,13 @@ function TrainStationViewModel() {
     // I used jQuery ajax moduel of getJSON to access the London Stations Data
     $.getJSON("http://marquisdegeek.com/api/tube/")
         .done(function (allData) {
-            const mappedStations = $.map(allData, function (item) { return new TrainStation(item) });
+            const mappedStations = $.map(allData, function (item) { return new TrainStation(item); });
             self.stations(mappedStations);
             self.visibleStations(self.stations());  // when page first loads set all stations are visible
         })
         .fail(function (jqxhr, textStatus, error) {
             const err = "Error happened while retrieving data: " + textStatus + ", " + error;
-            alert(err)
+            alert(err);
         });
 
     // OPERATIONS
@@ -168,23 +171,23 @@ function TrainStationViewModel() {
     self.filterStations = function () {
 
         // Filter stations based on the filter
-        self.visibleStations(self.stations().filter(station => station.name.toLowerCase().includes(self.filterQuery().toLowerCase())))
+        self.visibleStations(self.stations().filter(station => station.name.toLowerCase().includes(self.filterQuery().toLowerCase())));
 
         // Remove all markers first or all stations and then only make
         // visible the ones filtered
         self.stations().forEach(element => {
-            element.marker.setVisible(false)
+            element.marker.setVisible(false);
         });
 
         // create a new LatLngBounds object, so we can focus on only filtered areas
         const bounds = new google.maps.LatLngBounds();
         self.visibleStations().forEach(element => {
-            element.marker.setVisible(true)
-            bounds.extend(element.marker.position)
+            element.marker.setVisible(true);
+            bounds.extend(element.marker.position);
         });
         if (self.visibleStations().length > 0) {
             // Ensure all stations are still visible after filtering
-            map.fitBounds(bounds)
+            map.fitBounds(bounds);
         } else {
             // filter returns no data points, set the map center to London city center
             map.setCenter({ lat: 51.521340, lng: -0.125527 });
@@ -192,13 +195,6 @@ function TrainStationViewModel() {
         }
 
     };
-
-    // Run when user clicks a station name
-    self.filterOneStation = function (station) {
-        self.filterQuery(station.name);
-        self.filterStations();
-    }
-
 }
 
 // This is a kind of quick way via jQuery, I didn't think thoroughly to convert to knowckout js
@@ -212,7 +208,7 @@ $(document).ready(function () {
 
 // initMap is required by GoogleMaps, it's a callback function,
 function initMap() {
-    const centralLondon = { lat: 51.521340, lng: -0.125527 }
+    const centralLondon = { lat: 51.521340, lng: -0.125527 };
 
     // Constructor creates a new map - only center and zoom are required
     map = new google.maps.Map(document.getElementById('map'), {
@@ -228,6 +224,6 @@ function initMap() {
 }
 
 // If Google Maps loading fails this is the callback function
-onerror = function () {
-    alert('Loading Google maps javascript failed')
-}
+onerror = function (event) {
+    alert(`Loading Google maps javascript failed. Reason: ${event}`);
+};

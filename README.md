@@ -5,17 +5,19 @@ Fourth project in Udacity's Full Stack Nanodegree is **Neighbourhood Map Project
  > Click [here](http://185.137.92.115:8000) for live app.
 
 ## Application
-I'm a regular user of London underground services, therefore I wanted to create a web app, focused on London Train Stations, managed by [TFL](https://tfl.gov.uk) (Transport for London).
+I'm a regular user of London underground services, and few times I used TFL Santander bicycles, nicknamed [Boris Bikes](https://static.independent.co.uk/s3fs-public/thumbnails/image/2015/11/23/16/GettyImages-497821114.jpg?w968). I wanted to create a web app that displays London Train Stations and whenever a user clicks on a station on the map or choose from the list, info window pops up and shows nearby bike stations together with bike availablity data.
 
-This app queries API for London Train Stations data when a user is connected, and displays the results on the sidebar as well as on the map.
+ > *Note that bike stations are mostly installed in Zone 1 and Zone 2. In other zones user would likely to fail finding bike stations nearby.*
+
+This app queries two APIs:
+ - London Train Stations data
+ - Bike Stations data
 
 Users can:
  - list all train stations along with Zone information. All Stations are displayed on the map.
  - filter stations by typing into filter box, either on sidebar or on the navbar
  - toggle sidebar by clicking hamburger icon (hamburger icon also toggles the filter box on navbar).
- - click on markers and get station name and zon information.
- - click on station names and will be focusing on that particular station
-
+ - click on markers or station name on the sidebar and get bike availability data.
 
  Filtering results also changes the map zoom level and center. This way users do not need to constantly zoom.
 
@@ -25,10 +27,12 @@ Users can:
  - `jQuery` was used for AJAX calls to data as well as sidebar toggling. `jQuery` is also used by `Bootstrap`
  - `Bootstrap 4` was used for styling the web app and making it mobile friendly and responsive. Further CSS customization is done in `style.css` file
  - Data for TFL stations was available at [Marquis de Geek web site](http://marquisdegeek.com/api/tube/) as a JSON file.
+ - [Bike availability data](https://api.tfl.gov.uk/bikepoint) is provided by TFL.
 
 # Credits
 - Udacity Google Maps Course. I used few exampled fgrom there, like infoWindow and markers.
 - London Station Data is queried from[Marquis de Geek](http://marquisdegeek.com/api/tube/) web site. Kudos to him.
+- Thanks TFL for the bike data. TFL has few good APIs.
 - Finally, my sidebar design was influenced from one of [Bootstrapious](https://bootstrapious.com/p/bootstrap-sidebar) examples. Thanks for the inspiration.
 
 # Notes:
