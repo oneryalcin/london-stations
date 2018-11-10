@@ -73,7 +73,7 @@ const getNearbyBikeStations = function (marker) {
 
 const populateInfoWindowContent = function (marker, nearbyBikeStations) {
     let bikeInfo = "";
-    let stationInfo = `<div> <h4 class="mb-2"> ${marker.title}</h4> </div >`;
+    let stationInfo = `<div class="infobox"> <h6 class="mb-2"> ${marker.title}</h6> </div >`;
     if (nearbyBikeStations.length > 0) {
         for (const bikeStation of nearbyBikeStations) {
             // progress bar percentage
@@ -88,7 +88,7 @@ const populateInfoWindowContent = function (marker, nearbyBikeStations) {
             }
 
             // for each nearby bikestation create a new progress bar along with bike availability information
-            bikeInfo = bikeInfo + `<div class="row">
+            bikeInfo = bikeInfo + `<div class="row infobox">
             <p class="col-6 mb-1 text-truncate">${bikeStation.name}</p>
             <div class="col-6 d-flex flex-row bd-highlight mb-1 justify-content-end">
                 <div class="flex-row">

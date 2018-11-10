@@ -97,3 +97,9 @@ a:focus {
   position: fixed;
 }
 
+/* ---------------------------------------------------
+    INFOBOX STYLE
+----------------------------------------------------- */
+.infobox {
+    font: 0.5rem "Encode Sans Condensed", sans-serif;
+}
