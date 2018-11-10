@@ -118,6 +118,9 @@ const queryBorisBikeData = function () {
         .done(function (allBikeData) {
             const borisBikeStations = $.map(allBikeData, function (bikeData) { return new BorisBikeStation(bikeData); });
             localStorage.setItem('borisBikeStations', JSON.stringify(borisBikeStations));
+        })
+        .fail(function (jqxhr, textStatus, error) {
+            alert("Error happened while retrieving Bike Data from TFL API: " + textStatus + ", " + error);
         });
 };
 
@@ -197,7 +200,7 @@ function TrainStationViewModel() {
     };
 }
 
-// This is a kind of quick way via jQuery, I didn't think thoroughly to convert to knowckout js
+// This is a kind of quick way via jQuery, I didn't think thoroughly to convert to knockout js
 $(document).ready(function () {
     $('#sidebarCollapse').on('click', function () {
         $('#sidebar').toggleClass('active');
@@ -224,6 +227,6 @@ function initMap() {
 }
 
 // If Google Maps loading fails this is the callback function
-onerror = function (event) {
-    alert(`Loading Google maps javascript failed. Reason: ${event}`);
-};
+function googleMapsLoadError() {
+    $('#map').html('<div class="display-4">Error while loading Google maps</div>');
+}

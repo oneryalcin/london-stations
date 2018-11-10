@@ -1,17 +1,17 @@
-# Udacity Neighbourhood Map Project
+# Neighbourhood Map Project
 
-Fourth project in Udacity's Full Stack Nanodegree is **Neighbourhood Map Project**. We are asked to create a single page web application usinng **`Knockout.js`** and preffered 3rd party Map application. I decided to use **Google Maps JavaScript Library**
+This is a single page web application displaying London Train stations and Santander bike docks nearby using **`Knockout.js`** and **Google Maps JavaScript Library**.
 
  > Click [here](http://185.137.92.115:8000) for live app.
 
 ## Application
-I'm a regular user of London underground services, and few times I used TFL Santander bicycles, nicknamed [Boris Bikes](https://static.independent.co.uk/s3fs-public/thumbnails/image/2015/11/23/16/GettyImages-497821114.jpg?w968). I wanted to create a web app that displays London Train Stations and whenever a user clicks on a station on the map or choose from the list, info window pops up and shows nearby bike stations together with bike availablity data.
+I'm a regular user of London underground services, and few times I used TFL (Transport for London) Santander bicycles, also known as [Boris Bikes](https://static.independent.co.uk/s3fs-public/thumbnails/image/2015/11/23/16/GettyImages-497821114.jpg?w968). I created a web app that displays London Train Stations. Whenever user clicks on a station marker on the map or choose the station from the list, info window pops up and shows nearby bike stations together with latest bike availablity data.
 
  > *Note that bike stations are mostly installed in Zone 1 and Zone 2. In other zones user would likely to fail finding bike stations nearby.*
 
-This app queries two APIs:
- - London Train Stations data
- - Bike Stations data
+This app queries two APIs for Data:
+ - London Train Stations data (Marquis de Geek Tube API)
+ - Bike Stations data (TFL API)
 
 Users can:
  - list all train stations along with Zone information. All Stations are displayed on the map.
@@ -39,5 +39,6 @@ Users can:
 Google Maps API KEY is secured for [live app](http://185.137.92.115:8000) and the one in github is also secured and can only work from `http://127.0.0.1:5500` (VSCODE live server). If you download and you receive an error on Map screen either use VSCODE live server and run on port `5500` or use your Google Maps API key.
 
 Also note that for some reason, zooming works perfect on bigger devices and on PC/MAC, however in small devices auto doesn't work. This needs to be checked.
+
 
 Mehmet Oner Yalcin
