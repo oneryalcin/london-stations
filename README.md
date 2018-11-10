@@ -38,4 +38,6 @@ Users can:
 # Notes:
 Google Maps API KEY is secured for [live app](http://185.137.92.115:8000) and the one in github is also secured and can only work from `http://127.0.0.1:5500` (VSCODE live server). If you download and you receive an error on Map screen either use VSCODE live server and run on port `5500` or use your Google Maps API key.
 
+Also note that for some reason, zooming works perfect on bigger devices and on PC/MAC, however in small devices auto doesn't work. This needs to be checked.
+
 Mehmet Oner Yalcin
