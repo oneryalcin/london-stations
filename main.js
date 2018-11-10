@@ -157,7 +157,7 @@ function TrainStationViewModel() {
 
     // London stations data is located at Marquis de Geek api page for London Tube.
     // I used jQuery ajax moduel of getJSON to access the London Stations Data
-    $.getJSON("http://marquisdegeek.com/api/tube/")
+    $.getJSON("https://marquisdegeek.com/api/tube/")
         .done(function (allData) {
             const mappedStations = $.map(allData, function (item) { return new TrainStation(item); });
             self.stations(mappedStations);
